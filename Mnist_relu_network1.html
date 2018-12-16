@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Tayler Allen - Tech Philosopher</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <link href="css/clean-blog.min.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">Tayler Allen</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="about.html">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('img/post-bg.jpg')">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="post-heading">
+              <h1>Relu Neural Network for classifying the Mnist Dataset</h1>
+              <h2 class="subheading">An example of a fully connected neural network classifying the Mnist dataset using Pytorch.</h2>
+              <span class="meta">Posted by
+                <a href="https://github.com/taylerallen6">taylerallen6</a>
+                on December 11, 2018</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+<h2>Mnist_relu_network1</h2>
+
+<p>This is an example of a fully connected neural network classifying the mnist dataset. The full documentation can be found on my github <a href="https://github.com/taylerallen6/Mnist_relu_network1">here</a>.</p>
+
+<p>The network is written in python3 using <a href="https://github.com/pytorch">Pytorch</a> for tensor operations. It has 3 layers with a relu activation function in the hidden layer and a log softmax activation function in the output layer. Once trained the network has an accuracy of 96% on the training data and 93% accuracy on the test data. It's be no means perfect, but is a good experiment. Accuracy can be further improved by making ajustments to the batch size, learning rate, hidden layer size, and number of hidden layer. For example, the current hidden layer size is 200, but by increasing it to 300, the test data accuracy increases to 94%. Not much difference but it's a start.</p>
+
+<br/>
+
+<h2>Install</h2>
+
+<p>
+1. You need python 3 to run the script. Make sure you have it be continuing. This will not work with python 2. <br/>
+2. Create a virtual environment and activate it. <br/>
+3. Run 'pip3 install torch torchvision'. <br/>
+4. Clone this repository in your virtual environment. <br/>
+5. In your terminal, navigate to the directory containing the pt_mnist_relu1.py file. <br/>
+6. Run 'python3 pt_mnist_relu1.py'. <br/>
+</p>
+
+<br/>
+
+<h2>Code Explained</h2>
+
+<p>Note that this only explains parts of the code. It will not work if you simply copy each code snippets I have listed. Please follow the install process.</p>
+
+Batch size = 1 <br/>
+Input size = 784 (28 x 28 for each image) <br/>
+Hidden size = 200 <br/>
+output size = 10 (value for each digit) <br/>
+number of epochs = 20 <br/>
+
+<pre>
+# N is batch size; D_in is input dimension;
+# H is hidden dimension; D_out is output dimension.
+BATCH_SIZE = 1
+N, D_in, H, D_out = BATCH_SIZE, 784, 200, 10
+n_epochs = 20
+</pre>
+
+<br/>
+
+<h3>Get mnist dataset</h3>
+
+<p>I will not go in depth with this code other than it loads in the mnist dataset for you to use. The data is diveded into a training set of 60,000 images and a test set of 10,000 images. It then shows a few sample images based on the batch size. With the batch size currently set at 1, there with only be one image shown. If you increase the batch size, you will see more images displayed at once.</p>
+<pre>
+# torchvision.datasets.MNIST outputs a set of PIL images
+# We transform them to tensors
+transform = transforms.ToTensor()
+
+# Load and transform data
+trainset = torchvision.datasets.MNIST('/tmp', train=True, download=True, transform=transform)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=0)
+
+testset = torchvision.datasets.MNIST('/tmp', train=False, download=True, transform=transform)
+testloader = torch.utils.data.DataLoader(testset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
+
+def show_batch(batch):
+    im = torchvision.utils.make_grid(batch)
+    plt.imshow(np.transpose(im.numpy(), (1, 2, 0)))
+
+dataiter = iter(trainloader)
+images, labels = dataiter.next()
+
+print('Labels: ', labels)
+print('Batch shape: ', images.size())
+show_batch(images)
+plt.show()
+</pre>
+
+<br/>
+
+<h3>The network model</h3>
+
+<p>The network model has two weight tensors and two bias tensors. Then in the forward function, there is a linear function, a relu function, another linear function, and finally a log softmax function. The first linear takes the inputs, first weights, and first biases. The relu takes the output of the first linear. The second linear takes the relu output, the second weights, and the second biases. Lastly, the log softmax takes the output of the second linear.</p>
+
+<pre>
+dtype = torch.float
+device = torch.device("cpu")
+# device = torch.device("cuda:0") # run on GPU
+
+class Network(torch.nn.Module):
+	def __init__(self, D_in, H, D_out):
+		super(Network, self).__init__()
+		# random weights and biases.
+		# set requires_grad=True so we CAN compute gradients with respect
+		# to these tensors during backprop.
+		self.w1 = torch.randn(H, D_in, device=device, dtype=dtype, requires_grad=True)
+		self.w2 = torch.randn(D_out, H, device=device, dtype=dtype, requires_grad=True)
+		self.b1 = torch.randn(H, device=device, dtype=dtype, requires_grad=True)
+		self.b2 = torch.randn(D_out, device=device, dtype=dtype, requires_grad=True)
+
+	def forward(self, x):
+		# forward pass
+		y_pred = F.linear(x, self.w1, self.b1)
+		y_pred = F.relu(y_pred)
+		y_pred = F.linear(y_pred, self.w2, self.b2)
+		y_pred = F.log_softmax(y_pred, dim=1)
+
+		return y_pred
+</pre>
+
+<br/>
+
+<p>I initialize the model using the variables defined above:</p>
+<pre>
+model = Network(D_in, H, D_out)
+</pre>
+
+<br/>
+
+<h3>Function to train the network</h3>
+
+<p>I then define a train function taking the model, the training data loader, and the number of epochs. It defines the learning rate = .001, then iterates through each epoch. For each epoch, it then iterates through the entire training set.</p>
+<pre>
+def train(model, trainloader, n_epochs=2):
+	learning_rate = .001
+	for t in range(n_epochs):
+		print("epoch: ",t)
+		correct = 0
+		for i, data in enumerate(trainloader):
+			inputs, labels = data
+			inputs, labels = Variable(inputs), Variable(labels)
+
+			# reformat data
+			inputs = inputs.squeeze().reshape(inputs.shape[0], inputs.shape[2]*inputs.shape[3])
+
+			# forward pass
+			y_pred = model(inputs)
+			predicted = torch.argmax(y_pred.data, dim=1)
+			correct += (predicted == labels).sum()
+
+			# compute loss
+			loss_func = nn.CrossEntropyLoss()
+			loss = loss_func(y_pred, labels)
+
+			# use autograd to compute backprop.
+			# computes gradient of loss with respect to all tensors with requires_grad=True.
+			# w1.grad, w2.grad, b1.grad, and b2.grad will be tensors of gradient of loss with respect to w1 and w2.
+			loss.backward()
+			
+			# wrap in torch.no_grad() so we don't track weights in
+			# autograd while updating them.
+			with torch.no_grad():
+				model.w1 -= learning_rate * model.w1.grad
+				model.w2 -= learning_rate * model.w2.grad
+				model.b1 -= learning_rate * model.b1.grad
+				model.b2 -= learning_rate * model.b2.grad
+
+				# zero out gradients for the next pass after updating them.
+				model.w1.grad.zero_()
+				model.w2.grad.zero_()
+				model.b1.grad.zero_()
+				model.b2.grad.zero_()
+
+		print('Accuracy: ', 100 * correct / len(trainset))
+</pre>
+
+<br/>
+
+<h4>Deeper explaining the train function</h4>
+
+<pre>
+inputs, labels = data
+inputs, labels = Variable(inputs), Variable(labels)
+
+# reformat data
+inputs = inputs.squeeze().reshape(inputs.shape[0], inputs.shape[2]*inputs.shape[3])
+</pre>
+<p>This defines the input data and the label data. Then, the input data is reshaped the be a tensor of [1, 784] instead of a tensor of [1, 1, 28, 28].</p>
+
+<br/>
+
+<pre>
+# forward pass
+y_pred = model(inputs)
+predicted = torch.argmax(y_pred.data, dim=1)
+correct += (predicted == labels).sum()
+</pre>
+<p>This calls the forward() function and calculates the prediction. Note, the forward() function is automatically called when calling model(inputs). The correct += (predicted == labels).sum() helps calculate the accuracy for the entire epoch.</p>
+
+<br/>
+
+<pre>
+# compute loss
+loss_func = nn.CrossEntropyLoss()
+loss = loss_func(y_pred, labels)
+
+# use autograd to compute backprop.
+# computes gradient of loss with respect to all tensors with requires_grad=True.
+# w1.grad, w2.grad, b1.grad, and b2.grad will be tensors of gradient of loss with respect to w1 and w2.
+loss.backward()
+</pre>
+<p>This calculates the loss using cross entropy and computes the gradients using the .backward() method.</p>
+
+<br/>
+
+<pre>
+# wrap in torch.no_grad() so we don't track weights in
+    # autograd while updating them.
+    with torch.no_grad():
+      model.w1 -= learning_rate * model.w1.grad
+      model.w2 -= learning_rate * model.w2.grad
+      model.b1 -= learning_rate * model.b1.grad
+      model.b2 -= learning_rate * model.b2.grad
+
+      # zero out gradients for the next pass after updating them.
+      model.w1.grad.zero_()
+      model.w2.grad.zero_()
+      model.b1.grad.zero_()
+      model.b2.grad.zero_()
+</pre>
+<p>This updates the weights and biases, then zeros the gradients so they can be computed again in the next iteration.</p>
+
+<br/>
+
+<h3>Function to test the network</h3>
+
+<pre>
+def test(model, testloader, n):
+	correct = 0
+	for data in testloader:
+		inputs, labels = data
+		inputs, labels = Variable(inputs), Variable(labels)
+
+		# reformat data
+		inputs = inputs.squeeze().reshape(inputs.shape[0], inputs.shape[2]*inputs.shape[3])
+
+		outputs = model(inputs)
+		pred = torch.argmax(outputs.data, dim=1)
+		correct += (pred == labels).sum()
+	return 100 * correct / n
+</pre>
+<p>This is pretty much the same as the train() function but with two main differences. First, there is not epoch iteration. This is because you do not need to run the network over the test data more than once. Second, there is no loss calculation, weights and bias updating, and gradient zeroing. This is because there is no need to update the model while testing. You only want to test the model on what it learned while training. If it learns more while testing, the results will be inaccurate.</p>
+
+<br/>
+
+<h3>Actually train and test the network</h3>
+
+<pre>
+train(model, trainloader, n_epochs)
+print('Test Data Accuracy: ', test(model, testloader, len(testset)))
+</pre>
+<p>The result prints the accuracy for each epoch of training and lastly, the test accuracy.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <ul class="list-inline text-center">
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+            </ul>
+            <p class="copyright text-muted">Copyright &copy; Your Website 2018</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="js/clean-blog.min.js"></script>
+
+  </body>
+
+</html>
